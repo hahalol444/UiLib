@@ -1,0 +1,489 @@
+local Library = {}
+
+local GetService = game.GetService
+local newInstance = Instance.new
+local pairs = pairs
+
+local newUDim2, newUDim = UDim2.new, UDim.new
+local fromRGB = Color3.fromRGB
+
+local UserInputService = GetService(game, "UserInputService")
+local Connect = game.Loaded.Connect
+
+Library.Flags = {}
+
+
+function Library.Create(Class, Properties)
+	Properties = Properties or {}
+
+	local Object = newInstance(Class)
+	for Index, Value in pairs(Properties) do
+		Object[Index] = Value
+	end
+
+	return Object
+end
+
+local AssignRoundProperty = function(Object, RoundAmount)
+	local Corner = newInstance("UICorner", Object)
+	Corner.CornerRadius = newUDim(RoundAmount, 0)
+end
+
+local TweenService = GetService(game, "TweenService")
+local Tween; do
+	local TweenCreate = TweenService.Create
+
+	Tween = function(Object, Info, PropertyTable)
+		TweenCreate(TweenService, Object, Info, PropertyTable):Play()
+	end
+end
+local newTweenInfo = TweenInfo.new
+
+local UI_Config = {
+	MainColor = fromRGB(28, 29, 33);
+	SecondaryColor = fromRGB(37, 38, 43);
+	TextColors = fromRGB(99, 101, 104);
+	ImageColors = fromRGB(99, 101, 104);
+	HighLightA = fromRGB(79, 79, 79);
+	HighLightB = fromRGB(255, 255, 255)
+}
+
+function Library.Load(UiName)
+	local Module = {}
+	UiName = UiName or 'Zexel'
+
+	local BaseContainer = Library.Create('ScreenGui', {
+		Name = 'Zxx';
+	})
+
+	local Base = Library.Create("Frame", {
+		Name = "Base";
+		BackgroundColor3 = UI_Config.MainColor;
+		Position = newUDim2(0.326562434, 0, 0.391411126, 0);
+		Size = newUDim2(0, 405, 0, 293);
+		Parent = BaseContainer;
+		ClipsDescendants = true; 
+		Active = true;
+		Draggable = true;
+	})
+	AssignRoundProperty(Base, 0.02)
+	local TopBar = Library.Create("Frame", {
+		Name = "TopBar";
+		Parent = Base;
+		BackgroundColor3 = UI_Config.SecondaryColor;
+		Position = newUDim2(-0.000483815267, 0, -0.00148062513, 0);
+		Size = newUDim2(0, 405, 0, 21);
+	})
+	AssignRoundProperty(TopBar, 0.2)
+	local Logo = Library.Create("ImageLabel", {
+		Name = "Logo";
+		Parent = TopBar;
+		BackgroundColor3 = fromRGB(42, 42, 42);
+		BackgroundTransparency = 1;
+		Position = newUDim2(-0.000153046101, 0, 0.116833106, 0);
+		Size = newUDim2(0.0569892488, 0, 0.72962302, 0);
+		Image = "http://www.roblox.com/asset/?id=8084497905";
+		ImageColor3 = UI_Config.TextColors;
+		ScaleType = Enum.ScaleType.Fit;
+		SliceCenter = Rect.new(0, 0, 0, 0);
+	})
+	local GuiName = Library.Create("TextLabel", {
+		Name = "GuiName";
+		Parent = Logo;
+		BackgroundColor3 = fromRGB(255, 255, 255);
+		BackgroundTransparency = 1;
+		Position = newUDim2(0.999998808, 0, -0.160127223, 0);
+		Size = newUDim2(0, 141, 0, 21);
+		Font = Enum.Font.SourceSansBold;
+		Text = UiName;
+		TextColor3 = UI_Config.TextColors;
+		TextSize = 14.000;
+		TextXAlignment = Enum.TextXAlignment.Left;
+	})
+	local SelectionMenu = Library.Create("Frame", {
+		Name = "SelectionMenu";
+		BackgroundColor3 = UI_Config.MainColor;
+		BackgroundTransparency = 1;
+		Position = newUDim2(0, 0, 0.0713685155, 0);
+		Size = newUDim2(0.999516189, 0, 0.929245055, 0);
+		Parent = Base;
+		ClipsDescendants = true; 
+	})
+	local Padding, Grid = Library.Create("UIGridLayout", {
+		Parent = SelectionMenu;
+		FillDirection = Enum.FillDirection.Vertical;
+		HorizontalAlignment = Enum.HorizontalAlignment.Center;
+		SortOrder = Enum.SortOrder.LayoutOrder;
+		VerticalAlignment = Enum.VerticalAlignment.Center;
+		CellPadding = newUDim2(0.100000001, 0, 0.140000001, 0);
+		CellSize = newUDim2(0.289999992, 0, 0.419999987, 0);
+	}), Library.Create("UIPadding", {
+		Parent = SelectionMenu;
+		PaddingBottom = newUDim(0.100000001, 0);
+		PaddingLeft = newUDim(0.100000001, 0);
+		PaddingRight = newUDim(0.100000001, 0);
+		PaddingTop = newUDim(0.100000001, 0);
+	})
+
+	function Module.AddTab(TabName, ImageID)
+		local Tab = {}
+		TabName = TabName or 'Blank'
+		ImageID = ImageID or '0'
+
+		local TabBase = Library.Create('TextButton', {
+			Name = "Tab";
+			Active = false;
+			BackgroundColor3 = UI_Config.SecondaryColor;
+			BorderSizePixel = 0;
+			Selectable = false;
+			Size = newUDim2(0, 100, 0, 100);
+			AutoButtonColor = false;
+			LineHeight = 2.03;
+			Text = TabName;
+			TextTransparency = 1;
+			TextColor3 = UI_Config.TextColors;
+			Parent = SelectionMenu;
+			TextYAlignment = Enum.TextYAlignment.Bottom;
+		})
+		AssignRoundProperty(TabBase, 0.07)
+		local SectionHolder = Library.Create("Frame", {
+			Name = "SectionHolder";
+			Parent = Base;
+			BackgroundColor3 = UI_Config.MainColor;
+			BorderSizePixel = 0;
+			BackgroundTransparency = 0;
+			Position = newUDim2(0, 0, 0.0713685155, 0);
+			Size = newUDim2(0.999516189, 0, 0.929245055, 0);
+			Visible = false;
+		})
+		local BackButton = Library.Create("TextButton", {
+			Parent = SectionHolder;
+			BackgroundColor3 = fromRGB(255, 255, 255);
+			BackgroundTransparency = 1;
+			Position = newUDim2(-0.00246959925, 0, 0.00894105807, 0);
+			Size = newUDim2(0, 53, 0, 23);
+			Font = Enum.Font.SourceSansBold;
+			Text = "Back";
+			TextTransparency = 0;
+			TextColor3 = UI_Config.TextColors;
+			TextSize = 14.000
+		})
+		local List = Library.Create("UIListLayout", {
+			Parent = TabBase;
+			HorizontalAlignment = Enum.HorizontalAlignment.Center;
+			SortOrder = Enum.SortOrder.LayoutOrder;
+			VerticalAlignment = Enum.VerticalAlignment.Center;
+		})
+		local TabIcon = Library.Create("ImageLabel", {
+			Name = "TabIcon";
+			Parent = TabBase;
+			Active = false;
+			BackgroundColor3 = fromRGB(255, 255, 255);
+			BackgroundTransparency = 1;
+			Position = newUDim2(0, 0, 0.146087766, 0);
+			Selectable = false;
+			Size = newUDim2(1, 0, 0.396087974, 0);
+			Image = "http://www.roblox.com/asset/?id=" .. ImageID;
+			ImageColor3 = UI_Config.ImageColors;
+			ScaleType = Enum.ScaleType.Fit;
+			SliceCenter = Rect.new(0, 0, 64, 64);
+		})
+		local NewSection = Library.Create("Frame", {
+			Name = "NewSection";
+			Parent = SectionHolder;
+			BackgroundColor3 = UI_Config.MainColor;
+			BorderSizePixel = 0;
+			Position = newUDim2(0, 0, 0.0934163481, 0);
+			Size = newUDim2(0.999516249, 0, 0.907197297, 0);
+		})
+		local UIListLayout = Library.Create("UIListLayout", {
+			Parent = NewSection;
+			FillDirection = Enum.FillDirection.Horizontal;
+			SortOrder = Enum.SortOrder.LayoutOrder;
+		})
+
+		Connect(BackButton.MouseButton1Click, function()
+			SectionHolder.Visible = not SectionHolder.Visible
+			TabBase.Visible = not TabBase.Visible
+		end)
+
+		Connect(TabBase.MouseButton1Click, function()
+			SectionHolder.Visible = not SectionHolder.Visible
+			TabBase.Visible = not TabBase.Visible
+		end)
+
+		Connect(TabBase.MouseEnter, function()
+			Tween(TabBase, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextTransparency = 0, TextColor3 = UI_Config.HighLightB})
+			Tween(TabIcon, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageColor3 = UI_Config.HighLightB,})
+		end)
+
+		Connect(TabBase.MouseLeave, function()
+			Tween(TabBase, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextTransparency = 1, TextColor3 = UI_Config.TextColors})
+			Tween(TabIcon, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageColor3 = UI_Config.TextColors,})
+		end)
+
+		function Tab.AddSection()
+			local Section = {}
+
+			local ButtonContainers = Library.Create("ScrollingFrame", {
+				Name = "ButtonContainers";
+				Parent = NewSection;
+				Active = true;
+				BackgroundColor3 = fromRGB(255, 255, 255);
+				BackgroundTransparency = 1.000;
+				BorderSizePixel = 0;
+				Position = newUDim2(0, 0, 0.0923919901, 0);
+				Size = newUDim2(0, 202, 0, 246);
+				BottomImage = "rbxassetid://0";
+				MidImage = "http://www.roblox.com/asset/?id=8109944132";
+				ScrollBarThickness = 0;
+				TopImage = "rbxassetid://0";
+				AutomaticCanvasSize = Enum.AutomaticSize.Y
+			})
+			local UIListLayout = Library.Create("UIListLayout", {
+				Parent = ButtonContainers;
+				SortOrder = Enum.SortOrder.LayoutOrder;
+				Padding = newUDim(0, 2);
+			})
+			local UIPadding = Library.Create("UIPadding",{
+				Parent = ButtonContainers;
+				PaddingLeft = newUDim(0, 13);
+				PaddingTop = newUDim(0.001, 0);
+			})
+			ButtonContainers.UIListLayout:GetPropertyChangedSignal'AbsoluteContentSize':Connect(function()
+				local Size = ButtonContainers.Size
+				ButtonContainers.Size = newUDim2(Size.X.Scale, Size.X.Offset, Size.Y.Scale, (ButtonContainers.UIListLayout.AbsoluteContentSize.Y + 2))
+			end)
+
+			function Section.AddButton(Name, Callback)
+				local Button = Library.Create("TextButton", {
+					Name = "TextBox";
+					Parent = ButtonContainers;
+					BackgroundColor3 = UI_Config.SecondaryColor;
+					BorderSizePixel = 0;
+					Position = newUDim2(0, 0, 0.197038382, 0);
+					Size = newUDim2(0, 69, 0, 22);
+					AutoButtonColor = false;
+					Font = Enum.Font.SourceSansLight;
+					Text = Name;
+					TextWrapped = true;
+					TextColor3 = UI_Config.TextColors;
+					TextSize = 17.000;
+				})
+				AssignRoundProperty(Button, 0.2)
+				local ButtonEffect = TweenService:Create(Button, newTweenInfo(0.35, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 0, true), {BackgroundColor3 = UI_Config.HighLightA, TextColor3 = UI_Config.HighLightA})
+
+				task.spawn(function()
+					Connect(Button.MouseButton1Click, function()
+						ButtonEffect:Play()
+						Callback()
+					end)
+				end)
+			end
+			
+			function Section.AddBox(Name, Callback)
+				local TextBox = Library.Create("TextBox", {
+					Parent = ButtonContainers;
+					BackgroundColor3 = UI_Config.SecondaryColor;
+					BorderSizePixel = 0;
+					Position = newUDim2(0, 0, 0.0865020603, 0);
+					Size = newUDim2(0, 100, 0, 22);
+					Font = Enum.Font.SourceSansLight;
+					PlaceholderColor3 = UI_Config.TextColors;
+					PlaceholderText = Name;
+					Text = "";
+					TextWrapped = true;
+					TextColor3 = UI_Config.TextColors;
+					TextSize = 17.000;
+				})
+				AssignRoundProperty(TextBox, 0.2)
+
+				Connect(TextBox.MouseEnter, function()
+					Tween(TextBox, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {PlaceholderColor3 = UI_Config.HighLightA, TextColor3 = UI_Config.HighLightA})
+				end)
+
+				Connect(TextBox.MouseLeave, function()
+					Tween(TextBox, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {PlaceholderColor3 = UI_Config.TextColors, TextColor3 = UI_Config.TextColors})
+				end)
+
+				Connect(TextBox.FocusLost, function(EnterPressed, InputThatCausedFocusLost)
+					if InputThatCausedFocusLost.KeyCode == Enum.KeyCode.Unknown then return end
+					TextBox.Text = (EnterPressed and TextBox.Text)
+					Callback(TextBox.Text)
+				end)
+				
+			end
+			function Section.AddToggle(Name, Callback)
+				local Toggled = false;
+
+				local Toggle = Library.Create("TextButton", {
+					Name = "Toggle";
+					Parent = ButtonContainers;
+					BackgroundColor3 = UI_Config.SecondaryColor;
+					BorderSizePixel = 0;
+					Position = newUDim2(0, 0, 0.0122582829, 0);
+					Size = newUDim2(0, 14, 0, 14);
+					AutoButtonColor = false;
+					Font = Enum.Font.SciFi;
+					Text = "";
+					TextColor3 = fromRGB(0, 0, 0);
+					TextSize = 14.000;
+					TextStrokeColor3 = fromRGB(255, 255, 255);
+				})
+				local Icon = Library.Create("ImageLabel", {
+					Parent = Toggle;
+					BackgroundColor3 = fromRGB(255, 255, 255);
+					BackgroundTransparency = 1.000;
+					Position = newUDim2(0, 0, 0.093, 0);
+					Size = newUDim2(1, 0, 0.862927556, 0);
+					ZIndex = 2;
+					ImageTransparency = 1;
+					ImageColor3 = UI_Config.HighLightB;
+					Image = "http://www.roblox.com/asset/?id=8180935663";
+					ScaleType = Enum.ScaleType.Fit;
+				})
+				AssignRoundProperty(Toggle, 0.2)
+
+				local ToggleName = Library.Create("TextButton", {
+					Name = "ToggleName";
+					Parent = Toggle;
+					Active = false;
+					BackgroundColor3 = fromRGB(255, 255, 255);
+					BackgroundTransparency = 1.000;
+					Position = newUDim2(0, 0, -0.087499842, 0);
+					Selectable = false;
+					TextWrapped = true;
+					TextScaled = false;
+					Size = newUDim2(4.5, 0, 1.08749974, 0);
+					AutoButtonColor = false;
+					Font = Enum.Font.SourceSansLight;
+					Text = Name;
+					TextColor3 = UI_Config.TextColors;
+					TextSize = 15.000;
+				})
+
+				local Effect; do
+					Effect = function()
+						Tween(Toggle, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {BackgroundColor3 = (Toggled and UI_Config.HighLightA) or UI_Config.SecondaryColor})
+						Tween(ToggleName, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = (Toggled and UI_Config.HighLightA) or UI_Config.TextColors})
+						Tween(Icon, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {ImageTransparency = (Toggled and 0) or 1})
+					end
+				end
+
+				task.spawn(function()
+					Connect(Toggle.MouseButton1Click, function()
+						Toggled = not Toggled;
+						Callback(Toggled)
+						Effect()
+					end)
+	
+					Connect(ToggleName.MouseButton1Click, function()
+						Toggled = not Toggled;
+						Callback(Toggled)
+						Effect()
+					end)
+				end)
+
+				function Section.AddDropDown(Name, List, Callback)
+					local Open = false
+
+					local DropDownButton = Library.Create("TextButton", {
+						Name = "DropDown";
+						Parent = ButtonContainers;
+						BackgroundColor3 = UI_Config.SecondaryColor;
+						BorderSizePixel = 0;
+						Position = newUDim2(0, 0, 0.30757457, 0);
+						Size = newUDim2(0, 131, 0, 22);
+						AutoButtonColor = false;
+						Font = Enum.Font.SourceSansLight;
+						Text = Name;
+						TextColor3 = UI_Config.TextColors;
+						TextSize = 17.000;
+					})
+					local DropDownIcon = Library.Create("ImageLabel", {
+						Parent = DropDownButton;
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+						BackgroundTransparency = 1.000;
+						Position = newUDim2(0.811036348, 0, 0.0909090936, 0);
+						Size = newUDim2(0, 24, 0, 18);
+						Image = "http://www.roblox.com/asset/?id=8197857540";
+						ScaleType = Enum.ScaleType.Fit;
+						Rotation = -90;
+					})
+					local DropDownFrame = Library.Create("ScrollingFrame", {
+						Name = "Frame";
+						Parent = DropDownButton;
+						BackgroundColor3 = UI_Config.SecondaryColor;
+						BorderSizePixel = 0;
+						Position = newUDim2(0, 0, 0.95, 0);
+						Selectable = false;
+						Size = newUDim2(0, 131, 0, 0);
+						ScrollBarThickness = 0;
+						AutomaticCanvasSize = Enum.AutomaticSize.Y;
+						ZIndex = 2;
+					})
+					local UIListLayout = Library.Create("UIListLayout", {
+						Parent = DropDownFrame;
+						SortOrder = Enum.SortOrder.LayoutOrder;
+					})
+					AssignRoundProperty(DropDownButton, 0.2)
+
+					Connect(DropDownButton.MouseButton1Click, function()
+						Tween(DropDownFrame, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Size = (Open and newUDim2(0,131,0,140)) or newUDim2(0,131,0,0)})
+						Tween(DropDownIcon, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Rotation = (Open and 0) or -90})
+						Open = not Open;
+					end)
+
+					for I = 1, #List do
+						local Value = List[I]
+
+						local InsideButton = Library.Create("TextButton", {
+							Name = "TextBox";
+							Parent = DropDownFrame;
+							BackgroundColor3 = UI_Config.SecondaryColor;
+							BorderSizePixel = 0;
+							Size = newUDim2(0, 131, 0, 22);
+							AutoButtonColor = false;
+							Font = Enum.Font.SourceSansLight;
+							Text = Value;
+							TextColor3 = Color3.fromRGB(99, 101, 104);
+							TextSize = 17.000;
+							ZIndex = 2
+						})
+						AssignRoundProperty(InsideButton, 0.1)
+
+						Connect(InsideButton.MouseEnter, function()
+							Tween(InsideButton, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = UI_Config.HighLightA})
+						end)
+
+						Connect(InsideButton.MouseLeave, function()
+							Tween(InsideButton, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = UI_Config.TextColors})
+						end)
+
+						Connect(InsideButton.MouseButton1Click, function()
+							Tween(DropDownFrame, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Size = (Open and newUDim2(0,131,0,140)) or newUDim2(0,131,0,0)})
+							Tween(DropDownIcon, newTweenInfo(0.15, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Rotation = (Open and 0) or -90})
+							Callback(Value)
+							DropDownButton.Text = Value
+							Open = false
+						end)
+
+					end
+					
+				end
+
+			end
+
+			return Section
+		end
+
+		return Tab
+	end
+
+	syn.protect_gui(BaseContainer)
+	BaseContainer.Parent = GetService(game, "CoreGui");
+
+	return Module
+end
+
+return Library
