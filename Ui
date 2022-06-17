@@ -205,11 +205,13 @@ function Library.Load(UiName)
 		Connect(BackButton.MouseButton1Click, function()
 			SectionHolder.Visible = not SectionHolder.Visible
 			TabBase.Visible = not TabBase.Visible
+			SelectionMenu.Visible = true
 		end)
 
 		Connect(TabBase.MouseButton1Click, function()
 			SectionHolder.Visible = not SectionHolder.Visible
 			TabBase.Visible = not TabBase.Visible
+			SelectionMenu.Visible = false
 		end)
 
 		Connect(TabBase.MouseEnter, function()
