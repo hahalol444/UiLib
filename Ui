@@ -482,7 +482,6 @@ function Library.Load(UiName)
 		return Tab
 	end
 
-	syn.protect_gui(BaseContainer)
 	BaseContainer.Parent = GetService(game, "CoreGui");
 
 	return Module
